@@ -23,6 +23,7 @@
             (mkPoetryEnv { projectDir = self; })
             poetry
             ruff
+            python313Packages.django
           ];
         };
       });
