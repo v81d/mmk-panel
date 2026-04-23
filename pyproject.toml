@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "mmk-panel"
+version = "0.1.0"
+description = ""
+authors = ["v81d <v81d@proton.me>"]
+readme = "README.md"
+license = "GPL-3.0-or-later"
+packages = [
+  { include = "mmk_panel" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
