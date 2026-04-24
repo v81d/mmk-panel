@@ -1,2 +1,5 @@
+# Environment variables (NEVER COMMIT!!!)
+.env
+
 __pycache__/
 *.sqlite3

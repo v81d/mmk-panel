@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,8 +80,12 @@ WSGI_APPLICATION = "mmk_panel.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("PSQL_NAME"),
+        "USER": os.getenv("PSQL_USER"),
+        "PASSWORD": os.getenv("PSQL_PASSWORD"),
+        "HOST": os.getenv("PSQL_HOST", "localhost"),
+        "PORT": os.getenv("PSQL_PORT", 5432),
     }
 }
 
@@ -121,3 +130,32 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Storage
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "access_key": os.getenv("S3_ACCESS_KEY"),
+            "secret_key": os.getenv("S3_SECRET_KEY"),
+            "bucket_name": os.getenv("S3_BUCKET_NAME"),
+            "endpoint_url": os.getenv("S3_ENDPOINT_URL"),
+            "region_name": os.getenv("S3_REGION_NAME"),
+            "signature_version": os.getenv("S3_SIGNATURE_VERSION", "s3v4"),
+            "addressing_style": os.getenv("S3_ADDRESSING_STYLE", "path"),
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "access_key": os.getenv("S3_ACCESS_KEY"),
+            "secret_key": os.getenv("S3_SECRET_KEY"),
+            "bucket_name": os.getenv("S3_BUCKET_NAME"),
+            "endpoint_url": os.getenv("S3_ENDPOINT_URL"),
+            "region_name": os.getenv("S3_REGION_NAME"),
+            "signature_version": os.getenv("S3_SIGNATURE_VERSION", "s3v4"),
+            "addressing_style": os.getenv("S3_ADDRESSING_STYLE", "path"),
+        },
+    },
+}

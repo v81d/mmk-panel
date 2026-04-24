@@ -15,5 +15,9 @@ class Rarity(models.Model):
 class Card(models.Model):
     name = models.CharField(max_length=200)
     nickname = models.CharField(max_length=100)
+    spritesheet = models.ImageField(upload_to="cards/spritesheets/")
     description = models.TextField()
     rarity = models.ForeignKey(Rarity, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
