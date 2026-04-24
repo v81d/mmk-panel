@@ -1,31 +1,46 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
+  description = "Django backend for the MMK game.";
 
-  outputs = { self, nixpkgs, poetry2nix }:
-    let
-      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
-    in
-    {
-      packages = forAllSystems (system: let
-        inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryApplication;
-      in {
-        default = mkPoetryApplication { projectDir = self; };
-      });
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.pyproject-nix.url = "github:pyproject-nix/pyproject.nix";
+  inputs.pyproject-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-      devShells = forAllSystems (system: let
-        inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryEnv;
-      in {
-        default = pkgs.${system}.mkShellNoCC {
-          packages = with pkgs.${system}; [
-            (mkPoetryEnv { projectDir = self; })
-            poetry
+  outputs = {
+    nixpkgs,
+    pyproject-nix,
+    ...
+  }: let
+    inherit (nixpkgs) lib;
+    forAllSystems = lib.genAttrs lib.systems.flakeExposed;
+
+    project = pyproject-nix.lib.project.loadPyproject {
+      projectRoot = ./.;
+    };
+
+    pythonAttr = "python3";
+  in {
+    devShells = forAllSystems (system: {
+      default = let
+        pkgs = nixpkgs.legacyPackages.${system};
+        python = pkgs.${pythonAttr};
+        pythonEnv = python.withPackages (project.renderers.withPackages {inherit python;});
+      in
+        pkgs.mkShell {
+          packages = with pkgs; [
+            pythonEnv
             ruff
-            python313Packages.django
+            uv
           ];
         };
-      });
-    };
+    });
+
+    packages = forAllSystems (
+      system: let
+        pkgs = nixpkgs.legacyPackages.${system};
+        python = pkgs.${pythonAttr};
+      in {
+        default = python.pkgs.buildPythonPackage (project.renderers.buildPythonPackage {inherit python;});
+      }
+    );
+  };
 }

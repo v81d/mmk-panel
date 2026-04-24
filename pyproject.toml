@@ -1,17 +1,9 @@
-[tool.poetry]
+[project]
 name = "mmk-panel"
 version = "0.1.0"
-description = ""
-authors = ["v81d <v81d@proton.me>"]
-readme = "README.md"
-license = "GPL-3.0-or-later"
-packages = [
-  { include = "mmk_panel" }
+description = "Django backend for the MMK game."
+authors = [ ]
+requires-python = ">=3.13"
+dependencies = [
+    "django>=6.0.4",
 ]
-
-[tool.poetry.dependencies]
-python = "^3.10"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
