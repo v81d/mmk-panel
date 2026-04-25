@@ -1,13 +1,18 @@
 import uuid
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
 # Pre-upload hook/procedure to randomize the filename by generating a UUID
 def card_sprite_upload_to(instance, filename):
     ext = filename.split(".")[-1]
-    new_name = f"{uuid.uuid4()}.{ext}"
-    return f"cards/sprites/{new_name}"
+    return f"cards/sprites/{uuid.uuid4()}.{ext}"
+
+
+def move_sprite_upload_to(instance, filename):
+    ext = filename.split(".")[-1]
+    return f"moves/sprites/{uuid.uuid4()}.{ext}"
 
 
 class Rarity(models.Model):
@@ -16,6 +21,84 @@ class Rarity(models.Model):
 
     name = models.CharField(max_length=50)
     desperation_constant = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.name
+
+
+# Insanely long model even though most of the fields are optional :(
+class Move(models.Model):
+    name = models.CharField(max_length=50)
+    sprite = models.ImageField(upload_to=move_sprite_upload_to)
+    cost = models.PositiveIntegerField(null=True, blank=True)
+    damage = models.PositiveIntegerField(null=True, blank=True)
+
+    # The ArrayFields should be of size 2 in the format [amplitude: float, duration: float]
+    # This set of fields are all about the Card itself
+    self_defense_multipler = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    self_attack_multipler = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    self_move_energy_multipler = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )  # will alter total
+    self_move_energy_gain_multipler = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )  # will alter received/more
+    self_desperation_multipler = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    self_defense_scalar_boost = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    self_attack_scalar_boost = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    self_move_energy_scalar_boost = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    self_move_energy_gain_scalar_boost = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    self_poison = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )  # can be used for heal depending on float value
+    self_prevent_move = models.PositiveIntegerField(null=True, blank=True)  # stun
+
+    # These are all about the enemy, not the Card itself!
+    enemy_defense_multiplier = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    enemy_attack_multiplier = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    enemy_move_energy_multiplier = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    enemy_move_energy_gain_multiplier = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    enemy_desperation_multiplier = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    enemy_defense_scalar_boost = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    enemy_attack_scalar_boost = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    enemy_move_energy_scalar_boost = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    enemy_move_energy_gain_scalar_boost = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    enemy_desperation_scalar_boost = ArrayField(
+        models.FloatField(), size=2, null=True, blank=True
+    )
+    enemy_poison = ArrayField(models.FloatField(), size=2, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -30,7 +113,7 @@ class Card(models.Model):
     defense = models.PositiveIntegerField()
     base_move_energy = models.PositiveIntegerField()
     base_move_energy_gain = models.PositiveIntegerField()
-    desperation = models.PositiveIntegerField()
+    desperation = models.FloatField()
 
     def __str__(self):
         return self.name
@@ -40,6 +123,10 @@ class Card(models.Model):
 class CardSprite(models.Model):
     card = models.ForeignKey("Card", on_delete=models.CASCADE)
     key = models.CharField(max_length=50)
-    image = models.ImageField(
-        upload_to=card_sprite_upload_to,
-    )
+    image = models.ImageField(upload_to=card_sprite_upload_to)
+
+
+class CardMove(models.Model):
+    card = models.ForeignKey("Card", on_delete=models.CASCADE)
+    move = models.ForeignKey("Move", on_delete=models.CASCADE)
+    order = models.PositiveIntegerField(default=0)
