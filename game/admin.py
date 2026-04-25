@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from .forms import MoveAdminForm
 from .models import Card, CardMove, CardSprite, Move, Rarity
 
 
@@ -10,6 +11,7 @@ class RarityAdmin(admin.ModelAdmin):
 
 @admin.register(Move)
 class MoveAdmin(admin.ModelAdmin):
+    form = MoveAdminForm
     list_display = ("name", "cost", "damage")
 
 

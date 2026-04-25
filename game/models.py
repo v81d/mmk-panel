@@ -33,8 +33,7 @@ class Move(models.Model):
     cost = models.PositiveIntegerField(null=True, blank=True)
     damage = models.PositiveIntegerField(null=True, blank=True)
 
-    # The ArrayFields should be of size 2 in the format [amplitude: float, duration: float]
-    # This set of fields are all about the Card itself
+    # Self properties
     self_defense_multipler = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
@@ -43,13 +42,14 @@ class Move(models.Model):
     )
     self_move_energy_multipler = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
-    )  # will alter total
+    )
     self_move_energy_gain_multipler = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
-    )  # will alter received/more
+    )
     self_desperation_multipler = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
+
     self_defense_scalar_boost = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
@@ -62,12 +62,11 @@ class Move(models.Model):
     self_move_energy_gain_scalar_boost = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
-    self_poison = ArrayField(
-        models.FloatField(), size=2, null=True, blank=True
-    )  # can be used for heal depending on float value
-    self_prevent_move = models.PositiveIntegerField(null=True, blank=True)  # stun
+    self_poison = ArrayField(models.FloatField(), size=2, null=True, blank=True)
 
-    # These are all about the enemy, not the Card itself!
+    self_prevent_move = models.PositiveIntegerField(null=True, blank=True)
+
+    # Enemy properties
     enemy_defense_multiplier = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
@@ -83,6 +82,7 @@ class Move(models.Model):
     enemy_desperation_multiplier = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
+
     enemy_defense_scalar_boost = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
@@ -99,6 +99,8 @@ class Move(models.Model):
         models.FloatField(), size=2, null=True, blank=True
     )
     enemy_poison = ArrayField(models.FloatField(), size=2, null=True, blank=True)
+
+    enemy_prevent_move = models.PositiveIntegerField(null=True, blank=True)  # stun
 
     def __str__(self):
         return self.name
