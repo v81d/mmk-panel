@@ -49,7 +49,6 @@ class Move(models.Model):
     self_desperation_multipler = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
-
     self_defense_scalar_boost = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
@@ -63,7 +62,6 @@ class Move(models.Model):
         models.FloatField(), size=2, null=True, blank=True
     )
     self_poison = ArrayField(models.FloatField(), size=2, null=True, blank=True)
-
     self_prevent_move = models.PositiveIntegerField(null=True, blank=True)
 
     # Enemy properties
@@ -82,7 +80,6 @@ class Move(models.Model):
     enemy_desperation_multiplier = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
-
     enemy_defense_scalar_boost = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
@@ -99,7 +96,6 @@ class Move(models.Model):
         models.FloatField(), size=2, null=True, blank=True
     )
     enemy_poison = ArrayField(models.FloatField(), size=2, null=True, blank=True)
-
     enemy_prevent_move = models.PositiveIntegerField(null=True, blank=True)  # stun
 
     def __str__(self):
