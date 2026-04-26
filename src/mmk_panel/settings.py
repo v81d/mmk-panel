@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",
+    "rest_framework",
     "mmk_panel.apps.collectibles",
 ]
 
@@ -142,7 +143,7 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Storage
+# Storage settings
 
 STORAGES = {
     "default": {
@@ -169,4 +170,12 @@ STORAGES = {
             "addressing_style": os.getenv("S3_ADDRESSING_STYLE", "path"),
         },
     },
+}
+
+# REST framework
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    ]
 }

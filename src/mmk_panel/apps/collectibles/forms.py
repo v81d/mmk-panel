@@ -5,19 +5,19 @@ from .widgets import MoveEffectPairField, MoveEffectPairWidget
 
 
 class MoveAdminForm(forms.ModelForm):
-    self_defense_multipler = MoveEffectPairField(
+    self_defense_multiplier = MoveEffectPairField(
         widget=MoveEffectPairWidget(), required=False
     )
-    self_attack_multipler = MoveEffectPairField(
+    self_attack_multiplier = MoveEffectPairField(
         widget=MoveEffectPairWidget(), required=False
     )
-    self_move_energy_multipler = MoveEffectPairField(
+    self_move_energy_multiplier = MoveEffectPairField(
         widget=MoveEffectPairWidget(), required=False
     )
-    self_move_energy_gain_multipler = MoveEffectPairField(
+    self_move_energy_gain_multiplier = MoveEffectPairField(
         widget=MoveEffectPairWidget(), required=False
     )
-    self_desperation_multipler = MoveEffectPairField(
+    self_desperation_multiplier = MoveEffectPairField(
         widget=MoveEffectPairWidget(), required=False
     )
     self_defense_scalar_boost = MoveEffectPairField(

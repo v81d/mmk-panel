@@ -5,12 +5,12 @@ from django.db import models
 
 
 # Pre-upload hook/procedure to randomize the filename by generating a UUID
-def card_sprite_upload_to(instance, filename):
+def card_sprite_upload_to(_, filename):
     ext = filename.split(".")[-1]
     return f"cards/sprites/{uuid.uuid4()}.{ext}"
 
 
-def move_sprite_upload_to(instance, filename):
+def move_sprite_upload_to(_, filename):
     ext = filename.split(".")[-1]
     return f"moves/sprites/{uuid.uuid4()}.{ext}"
 
@@ -34,19 +34,19 @@ class Move(models.Model):
     damage = models.PositiveIntegerField(null=True, blank=True)
 
     # Self properties
-    self_defense_multipler = ArrayField(
+    self_defense_multiplier = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
-    self_attack_multipler = ArrayField(
+    self_attack_multiplier = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
-    self_move_energy_multipler = ArrayField(
+    self_move_energy_multiplier = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
-    self_move_energy_gain_multipler = ArrayField(
+    self_move_energy_gain_multiplier = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
-    self_desperation_multipler = ArrayField(
+    self_desperation_multiplier = ArrayField(
         models.FloatField(), size=2, null=True, blank=True
     )
     self_defense_scalar_boost = ArrayField(

@@ -31,11 +31,11 @@ class MoveAdmin(ModelAdmin):
             "Self Effects",
             {
                 "fields": (
-                    "self_defense_multipler",
-                    "self_attack_multipler",
-                    "self_move_energy_multipler",
-                    "self_move_energy_gain_multipler",
-                    "self_desperation_multipler",
+                    "self_defense_multiplier",
+                    "self_attack_multiplier",
+                    "self_move_energy_multiplier",
+                    "self_move_energy_gain_multiplier",
+                    "self_desperation_multiplier",
                     "self_defense_scalar_boost",
                     "self_attack_scalar_boost",
                     "self_move_energy_scalar_boost",
