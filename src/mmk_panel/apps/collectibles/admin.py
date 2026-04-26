@@ -1,5 +1,5 @@
 from django.contrib import admin
-from unfold.admin import ModelAdmin, TabularInline
+from django.contrib.admin import ModelAdmin, TabularInline
 
 from .forms import MoveAdminForm
 from .models import Card, CardMove, CardSprite, Move, Rarity

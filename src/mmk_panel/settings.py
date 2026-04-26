@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-adb(s$y2=fp_@iyfgad4c$t=9r7u#f0*u!ines9t-#_cpplyfd"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -33,19 +33,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Unfold settings
-
-UNFOLD = {
-    "SITE_TITLE": "MMK Administration",
-    "SITE_HEADER": "MMK Administration",
-    "SITE_SUBHEADER": "Content management panel",
-}
-
-
 # Application definition
 
 INSTALLED_APPS = [
-    "unfold",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -143,6 +133,7 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 # Storage settings
 
 STORAGES = {
@@ -171,6 +162,7 @@ STORAGES = {
         },
     },
 }
+
 
 # REST framework
 

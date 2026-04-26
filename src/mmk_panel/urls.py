@@ -22,3 +22,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("mmk_panel.apps.collectibles.urls")),
 ]
+
+admin.site.site_header = "MMK Administration"
+admin.site.site_title = "MMK Administration"
