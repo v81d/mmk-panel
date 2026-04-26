@@ -2,31 +2,15 @@
 
 MMK Panel is the official Django backend for the MMK game.
 
-This server is hosted officially on Oracle Cloud Infrastructure with S3 bucket storage. To replicate this setup, follow the instructions below.
+## PostgreSQL 15 Setup
 
-## PostgreSQL 15 Setup (Oracle Linux 9, aarch64)
+To install and set up PostgreSQL 15 as the database for MMK Panel, follow the steps:
 
-To install and set up PostgreSQL 15 on an ARM64 Oracle Linux 9 server, follow the steps:
-
-1. Install and enable PostgreSQL 15:
-
-```bash
-# Install the repository RPM:
-sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-aarch64/pgdg-redhat-repo-latest.noarch.rpm
-
-# Install PostgreSQL:
-sudo dnf install -y postgresql15-server
-
-# Optionally initialize the database and enable automatic start:
-sudo /usr/pgsql-15/bin/postgresql-15-setup initdb
-sudo systemctl enable postgresql-15
-sudo systemctl start postgresql-15
-```
+1. Install and enable PostgreSQL 15 following the [official instructions](https://www.postgresql.org/download).
 
 2. Set up the database and user:
 
 ```bash
-# Login to PostgreSQL user
 sudo -i -u postgres
 psql
 ```
@@ -34,20 +18,25 @@ psql
 In the shell, run:
 
 ```bash
-CREATE DATABASE mmkpaneldb;
-CREATE USER superuser WITH PASSWORD 'mypassword';  # set a secure password!!!
-ALTER ROLE superuser SET client_encoding TO 'utf8';
-ALTER ROLE superuser SET default_transaction_isolation TO 'read committed';
-ALTER ROLE superuser SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE mmkpaneldb TO superuser;
-\c mmkpaneldb
-GRANT ALL ON SCHEMA public TO superuser;
+CREATE DATABASE mmkpanel_db;
+CREATE USER mmkpanel_db_user WITH PASSWORD 'mypassword';
+
+ALTER ROLE mmkpanel_db_user SET client_encoding TO 'utf8';
+ALTER ROLE mmkpanel_db_user SET default_transaction_isolation TO 'read committed';
+ALTER ROLE mmkpanel_db_user SET timezone TO 'UTC';
+
+ALTER DATABASE mmkpanel_db OWNER TO mmkpanel_db_user;
+GRANT ALL PRIVILEGES ON DATABASE mmkpanel_db TO mmkpanel_db_user;
+
+\c mmkpanel_db
+ALTER SCHEMA public OWNER TO mmkpanel_db_user;
 ```
 
 3. Update listen addresses:
 
 ```bash
-sudo nano /var/lib/pgsql/15/data/postgresql.conf ```
+sudo nano /var/lib/pgsql/15/data/postgresql.conf
+```
 
 In the main configuration file, append this line:
 
