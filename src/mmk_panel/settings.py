@@ -33,6 +33,15 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# Unfold settings
+
+UNFOLD = {
+    "SITE_TITLE": "MMK Administration",
+    "SITE_HEADER": "MMK Administration",
+    "SITE_SUBHEADER": "Content management panel",
+}
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,7 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",
-    "collectibles",
+    "mmk_panel.apps.collectibles",
 ]
 
 MIDDLEWARE = [

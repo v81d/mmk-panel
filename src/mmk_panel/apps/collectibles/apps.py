@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class CollectiblesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "collectibles"
+    name = "mmk_panel.apps.collectibles"
