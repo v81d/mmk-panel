@@ -7,13 +7,15 @@ from .models import Card, CardMove, CardSprite, Move, Rarity
 
 @admin.register(Rarity)
 class RarityAdmin(ModelAdmin):
-    list_display = ("name", "desperation_constant")
+    list_display = ("id", "name", "desperation_constant")
+    ordering = ["id"]
 
 
 @admin.register(Move)
 class MoveAdmin(ModelAdmin):
     form = MoveAdminForm
-    list_display = ("name", "cost", "damage")
+    list_display = ("id", "name", "cost", "damage")
+    ordering = ["id"]
 
     fieldsets = (
         (
@@ -79,5 +81,6 @@ class CardMoveInline(TabularInline):
 
 @admin.register(Card)
 class CardAdmin(ModelAdmin):
-    list_display = ("name", "nickname", "rarity")
     inlines = [CardSpriteInline, CardMoveInline]
+    list_display = ("id", "name", "nickname", "rarity")
+    ordering = ["id"]

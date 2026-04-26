@@ -1,34 +1,35 @@
-from rest_framework import permissions, viewsets
+from rest_framework import viewsets
 
+from .filters import CardFilterSet, MoveFilterSet, RarityFilterSet
 from .models import Card, Move, Rarity
 from .serializers import CardSerializer, MoveSerializer, RaritySerializer
 
 
-class CardViewSet(viewsets.ModelViewSet):
+class CardViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows cards to be viewed.
     """
 
-    queryset = Card.objects.all().order_by("name")
+    queryset = Card.objects.all()
     serializer_class = CardSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filterset_class = CardFilterSet
 
 
-class MoveViewSet(viewsets.ModelViewSet):
+class MoveViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows moves to be viewed.
     """
 
-    queryset = Move.objects.all().order_by("name")
+    queryset = Move.objects.all()
     serializer_class = MoveSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filterset_class = MoveFilterSet
 
 
-class RarityViewSet(viewsets.ModelViewSet):
+class RarityViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows rarities to be viewed.
     """
 
-    queryset = Rarity.objects.all().order_by("name")
+    queryset = Rarity.objects.all()
     serializer_class = RaritySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filterset_class = RarityFilterSet
