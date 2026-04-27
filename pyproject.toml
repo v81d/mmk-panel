@@ -10,6 +10,7 @@ dependencies = [
  "django-storages>=1.14.6",
  "django-stubs>=6.0.3",
  "djangorestframework>=3.17.1",
+ "gunicorn>=25.3.0",
  "pillow>=12.2.0",
  "psycopg2-binary>=2.9.12",
  "pyright>=1.1.409",
