@@ -29,7 +29,6 @@ class Rarity(models.Model):
 # Insanely long model even though most of the fields are optional :(
 class Move(models.Model):
     name = models.CharField(max_length=50)
-    sprite = models.ImageField(upload_to=move_sprite_upload_to)
     cost = models.PositiveIntegerField(null=True, blank=True)
     damage = models.PositiveIntegerField(null=True, blank=True)
 
@@ -106,6 +105,9 @@ class Card(models.Model):
     name = models.CharField(max_length=200)
     nickname = models.CharField(max_length=100)
     description = models.TextField()
+    default_sprite = models.ImageField(
+        upload_to=move_sprite_upload_to
+    )  # required sprite field
     rarity = models.ForeignKey(Rarity, on_delete=models.CASCADE)
     health = models.PositiveIntegerField()
     defense = models.PositiveIntegerField()
@@ -118,13 +120,9 @@ class Card(models.Model):
 
 
 # This class is not exactly a model on its own, but rather an inline model that should be placed as a Card field
-class CardSprite(models.Model):
-    card = models.ForeignKey("Card", on_delete=models.CASCADE)
-    key = models.CharField(max_length=50)
-    image = models.ImageField(upload_to=card_sprite_upload_to)
-
-
 class CardMove(models.Model):
     card = models.ForeignKey("Card", on_delete=models.CASCADE)
     move = models.ForeignKey("Move", on_delete=models.CASCADE)
-    order = models.PositiveIntegerField(default=0)
+    sprite = models.ImageField(
+        upload_to=move_sprite_upload_to, null=True, blank=True
+    )  # optional; moves that do not have a unique sprite will use the default sprite

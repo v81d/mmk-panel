@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin, TabularInline
 
 from .forms import MoveAdminForm
-from .models import Card, CardMove, CardSprite, Move, Rarity
+from .models import Card, CardMove, Move, Rarity
 
 
 @admin.register(Rarity)
@@ -23,7 +23,6 @@ class MoveAdmin(ModelAdmin):
             {
                 "fields": (
                     "name",
-                    "sprite",
                     "cost",
                     "damage",
                 )
@@ -69,11 +68,6 @@ class MoveAdmin(ModelAdmin):
     )
 
 
-class CardSpriteInline(TabularInline):
-    model = CardSprite
-    extra = 1
-
-
 class CardMoveInline(TabularInline):
     model = CardMove
     extra = 1
@@ -81,6 +75,25 @@ class CardMoveInline(TabularInline):
 
 @admin.register(Card)
 class CardAdmin(ModelAdmin):
-    inlines = [CardSpriteInline, CardMoveInline]
+    inlines = [CardMoveInline]
     list_display = ("id", "name", "nickname", "rarity")
     ordering = ["id"]
+
+    fieldsets = (
+        (
+            "General Metadata",
+            {"fields": ("name", "nickname", "description", "default_sprite", "rarity")},
+        ),
+        (
+            "Attributes",
+            {
+                "fields": (
+                    "health",
+                    "defense",
+                    "base_move_energy",
+                    "base_move_energy_gain",
+                    "desperation",
+                )
+            },
+        ),
+    )
