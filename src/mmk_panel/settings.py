@@ -178,10 +178,15 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
-# Session cookie
+# Session
 
 SESSION_COOKIE_SECURE = os.getenv("DJANGO_SESSION_COOKIE_SECURE", "") != "False"
 
-# CSRF cookie
+# CSRF
 
 CSRF_COOKIE_SECURE = os.getenv("DJANGO_CSRF_COOKIE_SECURE", "") != "False"
+CSRF_TRUSTED_ORIGINS = [
+    host.strip()
+    for host in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+    if host.strip()
+]
