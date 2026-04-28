@@ -69,6 +69,7 @@
           packages = [
             virtualenv
             pkgs.pyright
+            pkgs.black
             pkgs.uv
           ];
           env = {
