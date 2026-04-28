@@ -13,6 +13,11 @@ def card_sprite_upload_to(_, filename):
     return f"collectibles/cards/sprites/{uuid.uuid4()}.{ext}"
 
 
+def card_audio_upload_to(_, filename):
+    ext = filename.split(".")[-1]
+    return f"collectibles/cards/audio/{uuid.uuid4()}.{ext}"
+
+
 def move_sprite_upload_to(_, filename):
     ext = filename.split(".")[-1]
     return f"collectibles/moves/sprites/{uuid.uuid4()}.{ext}"
@@ -65,6 +70,7 @@ class Move(models.Model):
     )
     self_poison = ArrayField(models.FloatField(), size=2, null=True, blank=True)
     self_prevent_move = models.PositiveIntegerField(null=True, blank=True)
+    self_custom_dialogue = models.TextField(null=True, blank=True)
 
     # Enemy properties
     enemy_defense_multiplier = ArrayField(
@@ -99,6 +105,7 @@ class Move(models.Model):
     )
     enemy_poison = ArrayField(models.FloatField(), size=2, null=True, blank=True)
     enemy_prevent_move = models.PositiveIntegerField(null=True, blank=True)  # stun
+    enemy_custom_dialogue = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -111,6 +118,7 @@ class Card(models.Model):
     default_sprite = models.ImageField(
         upload_to=card_sprite_upload_to
     )  # required sprite field
+    audio = models.FileField(upload_to=card_audio_upload_to, null=True, blank=True)
     rarity = models.ForeignKey(Rarity, on_delete=models.CASCADE)
     health = models.PositiveIntegerField()
     defense = models.PositiveIntegerField()

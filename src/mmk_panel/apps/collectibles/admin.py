@@ -43,6 +43,7 @@ class MoveAdmin(ModelAdmin):
                     "self_move_energy_gain_scalar_boost",
                     "self_poison",
                     "self_prevent_move",
+                    "self_custom_dialogue",
                 ),
             },
         ),
@@ -62,6 +63,7 @@ class MoveAdmin(ModelAdmin):
                     "enemy_desperation_scalar_boost",
                     "enemy_poison",
                     "enemy_prevent_move",
+                    "enemy_custom_dialogue",
                 ),
             },
         ),
@@ -82,7 +84,16 @@ class CardAdmin(ModelAdmin):
     fieldsets = (
         (
             "General Metadata",
-            {"fields": ("name", "nickname", "description", "default_sprite", "rarity")},
+            {
+                "fields": (
+                    "name",
+                    "nickname",
+                    "description",
+                    "default_sprite",
+                    "audio",
+                    "rarity",
+                )
+            },
         ),
         (
             "Attributes",
