@@ -68,6 +68,7 @@
         default = pkgs.mkShell {
           packages = [
             virtualenv
+            pkgs.pyright
             pkgs.uv
           ];
           env = {

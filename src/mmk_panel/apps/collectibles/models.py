@@ -1,18 +1,21 @@
 import uuid
+from io import BytesIO
 
 from django.contrib.postgres.fields import ArrayField
+from django.core.files.base import ContentFile
 from django.db import models
+from PIL import Image
 
 
 # Pre-upload hook/procedure to randomize the filename by generating a UUID
 def card_sprite_upload_to(_, filename):
     ext = filename.split(".")[-1]
-    return f"cards/sprites/{uuid.uuid4()}.{ext}"
+    return f"collectibles/cards/sprites/{uuid.uuid4()}.{ext}"
 
 
 def move_sprite_upload_to(_, filename):
     ext = filename.split(".")[-1]
-    return f"moves/sprites/{uuid.uuid4()}.{ext}"
+    return f"collectibles/moves/sprites/{uuid.uuid4()}.{ext}"
 
 
 class Rarity(models.Model):
@@ -106,7 +109,7 @@ class Card(models.Model):
     nickname = models.CharField(max_length=100)
     description = models.TextField()
     default_sprite = models.ImageField(
-        upload_to=move_sprite_upload_to
+        upload_to=card_sprite_upload_to
     )  # required sprite field
     rarity = models.ForeignKey(Rarity, on_delete=models.CASCADE)
     health = models.PositiveIntegerField()
@@ -114,6 +117,26 @@ class Card(models.Model):
     base_move_energy = models.PositiveIntegerField()
     base_move_energy_gain = models.PositiveIntegerField()
     desperation = models.FloatField()
+
+    def save(self, *args, **kwargs):
+        if self.default_sprite:
+            image = Image.open(self.default_sprite)
+            image_format = image.format
+
+            if image.mode in ("RGBA", "P"):
+                image = image.convert("RGB")
+
+            image_io = BytesIO()
+            image.save(
+                image_io, image_format, optimize=True, quality=70
+            )  # compress to 70% quality
+            image_content = ContentFile(
+                image_io.getvalue(), name=self.default_sprite.name
+            )
+
+            self.default_sprite = image_content
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -126,3 +149,19 @@ class CardMove(models.Model):
     sprite = models.ImageField(
         upload_to=move_sprite_upload_to, null=True, blank=True
     )  # optional; moves that do not have a unique sprite will use the default sprite
+
+    def save(self, *args, **kwargs):
+        if self.sprite:
+            image = Image.open(self.sprite)
+            image_format = image.format
+
+            if image.mode in ("RGBA", "P"):
+                image = image.convert("RGB")
+
+            image_io = BytesIO()
+            image.save(image_io, image_format, optimize=True, quality=70)
+            image_content = ContentFile(image_io.getvalue(), name=self.sprite.name)
+
+            self.sprite = image_content
+
+        super().save(*args, **kwargs)
