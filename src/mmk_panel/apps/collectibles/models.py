@@ -27,6 +27,7 @@ class Rarity(models.Model):
     class Meta:
         verbose_name_plural = "Rarities"
 
+    weight = models.PositiveIntegerField()
     name = models.CharField(max_length=50)
     desperation_constant = models.PositiveIntegerField()
 
