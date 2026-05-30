@@ -145,7 +145,9 @@ class Card(models.Model):
             from rembg import remove
 
             assert self.default_sprite.name, "default_sprite has no filename in Card"
-            image = Image.fromarray(remove(Image.open(self.default_sprite)))  # type: ignore[arg-type]
+            input_bytes = self.default_sprite.file.read()
+            output_bytes = remove(input_bytes)
+            image = Image.open(BytesIO(output_bytes))  # type: ignore[arg-type]
             image_io = BytesIO()
             image.save(image_io, "PNG", optimize=True)
             self.default_sprite = ContentFile(
@@ -176,16 +178,18 @@ class CardMove(models.Model):
             except CardMove.DoesNotExist:
                 pass
 
-        if self.sprite and isinstance(self.sprite.file, UploadedFile):
-            from rembg import remove
+            if self.sprite and isinstance(self.sprite.file, UploadedFile):
+                from rembg import remove
 
-            assert self.sprite.name, "sprite has no filename in CardMove"
-            image = Image.fromarray(remove(Image.open(self.sprite)))  # type: ignore[arg-type]
-            image_io = BytesIO()
-            image.save(image_io, "PNG", optimize=True)
-            self.sprite = ContentFile(
-                image_io.getvalue(),
-                name=self.sprite.name.rsplit(".", 1)[0] + ".png",
-            )
+                assert self.sprite.name, "sprite has no filename in CardMove"
+                input_bytes = self.sprite.file.read()
+                output_bytes = remove(input_bytes)
+                image = Image.open(BytesIO(output_bytes))  # type: ignore[arg-type]
+                image_io = BytesIO()
+                image.save(image_io, "PNG", optimize=True)
+                self.sprite = ContentFile(
+                    image_io.getvalue(),
+                    name=self.sprite.name.rsplit(".", 1)[0] + ".png",
+                )
 
         super().save(*args, **kwargs)
