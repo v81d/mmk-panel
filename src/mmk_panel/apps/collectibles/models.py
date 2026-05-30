@@ -5,6 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.files.base import ContentFile
 from django.db import models
 from PIL import Image
+from rembg import remove
 
 
 # Pre-upload hook/procedure to randomize the filename by generating a UUID
@@ -139,16 +140,14 @@ class Card(models.Model):
                 pass
 
         if self.default_sprite:
-            image = Image.open(self.default_sprite)
-
             assert self.default_sprite.name, "default_sprite has no filename in Card"
-            ext = self.default_sprite.name.split(".")[-1].upper()
-            image_format = {"JPG": "JPEG"}.get(ext, ext)
 
+            image = remove(Image.open(self.default_sprite))  # remove background
             image_io = BytesIO()
-            image.save(image_io, image_format, optimize=True)
+            image.save(image_io, "PNG", optimize=True)
             image_content = ContentFile(
-                image_io.getvalue(), name=self.default_sprite.name
+                image_io.getvalue(),
+                name=self.default_sprite.name.rsplit(".", 1)[0] + ".png",
             )
             self.default_sprite = image_content
 
@@ -176,15 +175,15 @@ class CardMove(models.Model):
                 pass
 
         if self.sprite:
-            image = Image.open(self.sprite)
-
             assert self.sprite.name, "sprite has no filename in CardMove"
-            ext = self.sprite.name.split(".")[-1].upper()
-            image_format = {"JPG": "JPEG"}.get(ext, ext)
 
+            image = remove(Image.open(self.sprite))
             image_io = BytesIO()
-            image.save(image_io, image_format, optimize=True)
-            image_content = ContentFile(image_io.getvalue(), name=self.sprite.name)
+            image.save(image_io, "PNG", optimize=True)
+            image_content = ContentFile(
+                image_io.getvalue(),
+                name=self.sprite.name.rsplit(".", 1)[0] + ".png",
+            )
             self.sprite = image_content
 
         super().save(*args, **kwargs)
