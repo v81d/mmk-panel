@@ -12,6 +12,7 @@ dependencies = [
  "django-storages>=1.14.6",
  "django-stubs>=6.0.3",
  "djangorestframework>=3.17.1",
+ "djangorestframework-camel-case>=1.4.2",
  "gunicorn>=25.3.0",
  "pillow>=12.2.0",
  "psycopg2-binary>=2.9.12",
