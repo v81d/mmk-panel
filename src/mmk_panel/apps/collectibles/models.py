@@ -3,6 +3,7 @@ from io import BytesIO
 
 from django.contrib.postgres.fields import ArrayField
 from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import UploadedFile
 from django.db import models
 from PIL import Image
 from rembg import remove
@@ -139,17 +140,15 @@ class Card(models.Model):
             except Card.DoesNotExist:
                 pass
 
-        if self.default_sprite:
+        if self.default_sprite and isinstance(self.default_sprite.file, UploadedFile):
             assert self.default_sprite.name, "default_sprite has no filename in Card"
-
-            image = remove(Image.open(self.default_sprite))  # remove background
+            image = Image.fromarray(remove(Image.open(self.default_sprite)))  # type: ignore[arg-type]
             image_io = BytesIO()
             image.save(image_io, "PNG", optimize=True)
-            image_content = ContentFile(
+            self.default_sprite = ContentFile(
                 image_io.getvalue(),
                 name=self.default_sprite.name.rsplit(".", 1)[0] + ".png",
             )
-            self.default_sprite = image_content
 
         super().save(*args, **kwargs)
 
@@ -174,16 +173,14 @@ class CardMove(models.Model):
             except CardMove.DoesNotExist:
                 pass
 
-        if self.sprite:
+        if self.sprite and isinstance(self.sprite.file, UploadedFile):
             assert self.sprite.name, "sprite has no filename in CardMove"
-
-            image = remove(Image.open(self.sprite))
+            image = Image.fromarray(remove(Image.open(self.sprite)))  # type: ignore[arg-type]
             image_io = BytesIO()
             image.save(image_io, "PNG", optimize=True)
-            image_content = ContentFile(
+            self.sprite = ContentFile(
                 image_io.getvalue(),
                 name=self.sprite.name.rsplit(".", 1)[0] + ".png",
             )
-            self.sprite = image_content
 
         super().save(*args, **kwargs)
