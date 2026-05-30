@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "rest_framework",
     "django_filters",
+    "colorfield",
     "mmk_panel.apps.collectibles",
 ]
 
