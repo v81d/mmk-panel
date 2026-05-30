@@ -55,6 +55,12 @@
           lib.composeManyExtensions [
             pyproject-build-systems.overlays.wheel
             overlay
+            (final: prev: {
+              numba = prev.numba.overrideAttrs (old: {
+                buildInputs = (old.buildInputs or []) ++ [pkgs.onetbb];
+                nativeBuildInputs = (old.nativeBuildInputs or []) ++ [pkgs.autoPatchelfHook];
+              });
+            })
           ]
         )
     );
