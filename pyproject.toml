@@ -14,7 +14,7 @@ dependencies = [
  "pillow>=12.2.0",
  "psycopg2-binary>=2.9.12",
  "python-dotenv>=1.2.2",
- "rembg>=2.0.75",
+ "rembg[cpu]>=2.0.75",
 ]
 
 [build-system]
