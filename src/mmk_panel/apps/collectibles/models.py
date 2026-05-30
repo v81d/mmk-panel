@@ -140,13 +140,13 @@ class Card(models.Model):
 
         if self.default_sprite:
             image = Image.open(self.default_sprite)
-            image_format = image.format
 
-            if image.mode in ("RGBA", "P"):
-                image = image.convert("RGB")
+            assert self.default_sprite.name, "default_sprite has no filename in Card"
+            ext = self.default_sprite.name.split(".")[-1].upper()
+            image_format = {"JPG": "JPEG"}.get(ext, ext)
 
             image_io = BytesIO()
-            image.save(image_io, image_format, optimize=True, quality=70)
+            image.save(image_io, image_format, optimize=True)
             image_content = ContentFile(
                 image_io.getvalue(), name=self.default_sprite.name
             )
@@ -177,13 +177,13 @@ class CardMove(models.Model):
 
         if self.sprite:
             image = Image.open(self.sprite)
-            image_format = image.format
 
-            if image.mode in ("RGBA", "P"):
-                image = image.convert("RGB")
+            assert self.sprite.name, "sprite has no filename in CardMove"
+            ext = self.sprite.name.split(".")[-1].upper()
+            image_format = {"JPG": "JPEG"}.get(ext, ext)
 
             image_io = BytesIO()
-            image.save(image_io, image_format, optimize=True, quality=70)
+            image.save(image_io, image_format, optimize=True)
             image_content = ContentFile(image_io.getvalue(), name=self.sprite.name)
             self.sprite = image_content
 
