@@ -128,6 +128,16 @@ class Card(models.Model):
     desperation = models.FloatField()
 
     def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                old = Card.objects.get(pk=self.pk)
+                if old.default_sprite and old.default_sprite != self.default_sprite:
+                    old.default_sprite.delete(save=False)  # type: ignore[union-attr]
+                if old.audio and old.audio != self.audio:
+                    old.audio.delete(save=False)  # type: ignore[union-attr]
+            except Card.DoesNotExist:
+                pass
+
         if self.default_sprite:
             image = Image.open(self.default_sprite)
             image_format = image.format
@@ -136,13 +146,10 @@ class Card(models.Model):
                 image = image.convert("RGB")
 
             image_io = BytesIO()
-            image.save(
-                image_io, image_format, optimize=True, quality=70
-            )  # compress to 70% quality
+            image.save(image_io, image_format, optimize=True, quality=70)
             image_content = ContentFile(
                 image_io.getvalue(), name=self.default_sprite.name
             )
-
             self.default_sprite = image_content
 
         super().save(*args, **kwargs)
@@ -160,6 +167,14 @@ class CardMove(models.Model):
     )  # optional; moves that do not have a unique sprite will use the default sprite
 
     def save(self, *args, **kwargs):
+        if self.pk and self.sprite:
+            try:
+                old = CardMove.objects.get(pk=self.pk)
+                if old.sprite and old.sprite != self.sprite:
+                    old.sprite.delete(save=False)  # type: ignore[union-attr]
+            except CardMove.DoesNotExist:
+                pass
+
         if self.sprite:
             image = Image.open(self.sprite)
             image_format = image.format
@@ -170,7 +185,6 @@ class CardMove(models.Model):
             image_io = BytesIO()
             image.save(image_io, image_format, optimize=True, quality=70)
             image_content = ContentFile(image_io.getvalue(), name=self.sprite.name)
-
             self.sprite = image_content
 
         super().save(*args, **kwargs)
