@@ -2,8 +2,9 @@
 
 import django.contrib.postgres.fields
 import django.db.models.deletion
-import mmk_panel.apps.collectibles.models
 from django.db import migrations, models
+
+import mmk_panel.apps.collectibles.models
 
 
 class Migration(migrations.Migration):

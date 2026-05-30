@@ -7,7 +7,7 @@ from .models import Card, CardMove, Move, Rarity
 
 @admin.register(Rarity)
 class RarityAdmin(ModelAdmin):
-    list_display = ("id", "weight", "name", "desperation_constant")
+    list_display = ("id", "weight", "name", "plate_color", "desperation_constant")
     ordering = ["weight"]
 
 

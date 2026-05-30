@@ -1,12 +1,12 @@
 import uuid
 from io import BytesIO
 
+from colorfield.fields import ColorField
 from django.contrib.postgres.fields import ArrayField
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 from django.db import models
 from PIL import Image
-from rembg import remove
 
 
 # Pre-upload hook/procedure to randomize the filename by generating a UUID
@@ -31,6 +31,7 @@ class Rarity(models.Model):
 
     weight = models.PositiveIntegerField()
     name = models.CharField(max_length=50)
+    plate_color = ColorField()
     desperation_constant = models.PositiveIntegerField()
 
     def __str__(self):
@@ -141,6 +142,8 @@ class Card(models.Model):
                 pass
 
         if self.default_sprite and isinstance(self.default_sprite.file, UploadedFile):
+            from rembg import remove
+
             assert self.default_sprite.name, "default_sprite has no filename in Card"
             image = Image.fromarray(remove(Image.open(self.default_sprite)))  # type: ignore[arg-type]
             image_io = BytesIO()
@@ -174,6 +177,8 @@ class CardMove(models.Model):
                 pass
 
         if self.sprite and isinstance(self.sprite.file, UploadedFile):
+            from rembg import remove
+
             assert self.sprite.name, "sprite has no filename in CardMove"
             image = Image.fromarray(remove(Image.open(self.sprite)))  # type: ignore[arg-type]
             image_io = BytesIO()
