@@ -77,6 +77,8 @@
             pkgs.pyright
             pkgs.black
             pkgs.uv
+            pkgs.stdenv.cc.cc.lib
+            pkgs.zlib
           ];
           env = {
             UV_NO_SYNC = "1";
@@ -86,6 +88,7 @@
           shellHook = ''
             unset PYTHONPATH
             export REPO_ROOT=$(git rev-parse --show-toplevel)
+            export LD_LIBRARY_PATH=${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib}/lib:$LD_LIBRARY_PATH
           '';
         };
       }
