@@ -76,6 +76,7 @@
             virtualenv
             pkgs.pyright
             pkgs.black
+            pkgs.isort
             pkgs.uv
             pkgs.stdenv.cc.cc.lib
             pkgs.zlib
