@@ -6,6 +6,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from PIL import Image
 
 
@@ -178,18 +180,32 @@ class CardMove(models.Model):
             except CardMove.DoesNotExist:
                 pass
 
-            if self.sprite and isinstance(self.sprite.file, UploadedFile):
-                from rembg import remove
+        if self.sprite and isinstance(self.sprite.file, UploadedFile):
+            from rembg import remove
 
-                assert self.sprite.name, "sprite has no filename in CardMove"
-                input_bytes = self.sprite.file.read()
-                output_bytes = remove(input_bytes)
-                image = Image.open(BytesIO(output_bytes))  # type: ignore[arg-type]
-                image_io = BytesIO()
-                image.save(image_io, "PNG", optimize=True)
-                self.sprite = ContentFile(
-                    image_io.getvalue(),
-                    name=self.sprite.name.rsplit(".", 1)[0] + ".png",
-                )
+            assert self.sprite.name, "sprite has no filename in CardMove"
+            input_bytes = self.sprite.file.read()
+            output_bytes = remove(input_bytes)
+            image = Image.open(BytesIO(output_bytes))  # type: ignore[arg-type]
+            image_io = BytesIO()
+            image.save(image_io, "PNG", optimize=True)
+            self.sprite = ContentFile(
+                image_io.getvalue(),
+                name=self.sprite.name.rsplit(".", 1)[0] + ".png",
+            )
 
         super().save(*args, **kwargs)
+
+
+@receiver(post_delete, sender=Card)
+def delete_card_files(sender, instance, **kwargs):
+    if instance.default_sprite:
+        instance.default_sprite.delete(save=False)
+    if instance.audio:
+        instance.audio.delete(save=False)
+
+
+@receiver(post_delete, sender=CardMove)
+def delete_card_move_files(sender, instance, **kwargs):
+    if instance.sprite:
+        instance.sprite.delete(save=False)

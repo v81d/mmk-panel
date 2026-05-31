@@ -1,4 +1,4 @@
-from django_filters import FilterSet, BaseInFilter, NumberFilter
+from django_filters import BaseInFilter, FilterSet, NumberFilter
 
 from .models import Card, Move, Rarity
 
