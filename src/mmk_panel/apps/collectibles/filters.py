@@ -12,7 +12,7 @@ class BaseIdFilterSet(FilterSet):
     ids = NumberInFilter(field_name="id", lookup_expr="in")
 
     def filter_queryset(self, queryset):
-        if not (self.data or {}).get("ids"):
+        if self.data is not None and self.data.get("ids") == "":
             return queryset.none()
 
         return super().filter_queryset(queryset)
