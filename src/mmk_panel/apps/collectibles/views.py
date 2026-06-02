@@ -1,5 +1,7 @@
 from rest_framework import viewsets
-
+from rest_framework.decorators import action
+from rest_framework.response import Response
+import random
 from .filters import CardFilterSet, MoveFilterSet, RarityFilterSet
 from .models import Card, Move, Rarity
 from .serializers import CardSerializer, MoveSerializer, RaritySerializer
@@ -13,6 +15,21 @@ class CardViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
     filterset_class = CardFilterSet
+
+    @action(detail=False, methods=["get"], url_path="random")
+    def random_cards(self, request):
+        try:
+            count = int(request.query_params.get("count", "10"))
+            if count < 1:
+                raise ValueError
+        except (ValueError, TypeError):
+            return Response({"error": "Count must be a positive integer."}, status=400)
+
+        all_ids = Card.objects.values_list("id", flat=True)
+        random_ids = random.sample(list(all_ids), min(count, len(all_ids)))
+        cards = Card.objects.filter(id__in=random_ids)
+
+        return Response(self.get_serializer(cards, many=True).data)
 
 
 class MoveViewSet(viewsets.ReadOnlyModelViewSet):
