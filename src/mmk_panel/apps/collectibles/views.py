@@ -19,7 +19,7 @@ class CardViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["get"], url_path="random")
     def random_cards(self, request):
         try:
-            count = int(request.query_params.get("count", "10"))
+            count = int(request.query_params.get("count", "1"))
             if count < 1:
                 raise ValueError
         except (ValueError, TypeError):
