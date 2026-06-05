@@ -1,7 +1,9 @@
+import random
+
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-import random
+
 from .filters import CardFilterSet, MoveFilterSet, RarityFilterSet
 from .models import Card, Move, Rarity
 from .serializers import CardSerializer, MoveSerializer, RaritySerializer
