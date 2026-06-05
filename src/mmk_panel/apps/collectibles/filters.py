@@ -26,16 +26,16 @@ class CardFilterSet(BaseIdFilterSet):
     nickname = CharInFilter(field_name="nickname", lookup_expr="in")
 
     rarity = NumberInFilter(field_name="rarity__id", lookup_expr="in")
-    rarity__name = CharInFilter(field_name="rarity__name", lookup_expr="in")
-    rarity__weight = NumberInFilter(field_name="rarity__weight", lookup_expr="in")
-    rarity__desperation_constant = NumberInFilter(
+    rarity_name = CharInFilter(field_name="rarity__name", lookup_expr="in")
+    rarity_weight = NumberInFilter(field_name="rarity__weight", lookup_expr="in")
+    rarity_desperation_constant = NumberInFilter(
         field_name="rarity__desperation_constant", lookup_expr="in"
     )
 
     move = NumberInFilter(field_name="cardmove__move__id", lookup_expr="in")
-    move__name = CharInFilter(field_name="cardmove__move__name", lookup_expr="in")
-    move__cost = NumberInFilter(field_name="cardmove__move__cost", lookup_expr="in")
-    move__damage = NumberInFilter(field_name="cardmove__move__damage", lookup_expr="in")
+    move_name = CharInFilter(field_name="cardmove__move__name", lookup_expr="in")
+    move_cost = NumberInFilter(field_name="cardmove__move__cost", lookup_expr="in")
+    move_damage = NumberInFilter(field_name="cardmove__move__damage", lookup_expr="in")
 
     class Meta:
         model = Card
