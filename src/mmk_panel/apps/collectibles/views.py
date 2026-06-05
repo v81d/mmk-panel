@@ -25,9 +25,12 @@ class CardViewSet(viewsets.ReadOnlyModelViewSet):
         except (ValueError, TypeError):
             return Response({"error": "Count must be a positive integer."}, status=400)
 
-        all_ids = Card.objects.values_list("id", flat=True)
+        filtered_qs = CardFilterSet(
+            request.query_params, queryset=Card.objects.all()
+        ).qs
+        all_ids = filtered_qs.values_list("id", flat=True)
         random_ids = random.sample(list(all_ids), min(count, len(all_ids)))
-        cards = Card.objects.filter(id__in=random_ids)
+        cards = filtered_qs.filter(id__in=random_ids)
 
         return Response(self.get_serializer(cards, many=True).data)
 
