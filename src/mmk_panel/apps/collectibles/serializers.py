@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from .models import Card, CardMove, Move, Rarity
+from .models import Card, CardMove, Move, MoveDomain, Rarity
 
 
 # Serializers define the API representation
@@ -10,7 +10,15 @@ class RaritySerializer(ModelSerializer):
         fields = "__all__"
 
 
+class MoveDomainSerializer(ModelSerializer):
+    class Meta:
+        model = MoveDomain
+        fields = "__all__"
+
+
 class MoveSerializer(ModelSerializer):
+    domains = MoveDomainSerializer(many=True, read_only=True)
+
     class Meta:
         model = Move
         fields = "__all__"

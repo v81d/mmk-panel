@@ -40,8 +40,7 @@ class Rarity(models.Model):
         return self.name
 
 
-# Insanely long model even though most of the fields are optional :(
-class Move(models.Model):
+class Move(models.Model):  # I hate this model with a burning passion.
     name = models.CharField(max_length=50)
     cost = models.PositiveIntegerField(null=True, blank=True)
     damage = models.PositiveIntegerField(null=True, blank=True)
@@ -117,6 +116,23 @@ class Move(models.Model):
         return self.name
 
 
+class MoveDomain(models.Model):
+    move = models.ForeignKey(
+        Move,
+        on_delete=models.CASCADE,
+        related_name="domains",
+    )
+    component_name = models.CharField(
+        max_length=100,
+    )
+
+    class Meta:
+        unique_together = ("move", "component_name")
+
+    def __str__(self):
+        return self.component_name
+
+
 class Card(models.Model):
     name = models.CharField(max_length=200)
     nickname = models.CharField(max_length=100)
@@ -180,19 +196,19 @@ class CardMove(models.Model):
             except CardMove.DoesNotExist:
                 pass
 
-        if self.sprite and isinstance(self.sprite.file, UploadedFile):
-            from rembg import remove
+            if self.sprite and isinstance(self.sprite.file, UploadedFile):
+                from rembg import remove
 
-            assert self.sprite.name, "sprite has no filename in CardMove"
-            input_bytes = self.sprite.file.read()
-            output_bytes = remove(input_bytes)
-            image = Image.open(BytesIO(output_bytes))  # type: ignore[arg-type]
-            image_io = BytesIO()
-            image.save(image_io, "PNG", optimize=True)
-            self.sprite = ContentFile(
-                image_io.getvalue(),
-                name=self.sprite.name.rsplit(".", 1)[0] + ".png",
-            )
+                assert self.sprite.name, "sprite has no filename in CardMove"
+                input_bytes = self.sprite.file.read()
+                output_bytes = remove(input_bytes)
+                image = Image.open(BytesIO(output_bytes))  # type: ignore[arg-type]
+                image_io = BytesIO()
+                image.save(image_io, "PNG", optimize=True)
+                self.sprite = ContentFile(
+                    image_io.getvalue(),
+                    name=self.sprite.name.rsplit(".", 1)[0] + ".png",
+                )
 
         super().save(*args, **kwargs)
 
