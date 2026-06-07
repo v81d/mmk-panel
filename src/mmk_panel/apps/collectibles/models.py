@@ -40,10 +40,30 @@ class Rarity(models.Model):
         return self.name
 
 
+class MoveDomain(models.Model):
+    component_name = models.CharField(max_length=100, unique=True)
+    move_persistence_count = models.PositiveIntegerField()
+
+    class Meta:
+        verbose_name = "Move Domain"
+        verbose_name_plural = "Move Domains"
+
+    def __str__(self):
+        return self.component_name
+
+
 class Move(models.Model):  # I hate this model with a burning passion.
     name = models.CharField(max_length=50)
     cost = models.PositiveIntegerField(null=True, blank=True)
     damage = models.PositiveIntegerField(null=True, blank=True)
+
+    domain = models.ForeignKey(
+        MoveDomain,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="moves",
+    )
 
     # Self properties
     self_defense_multiplier = ArrayField(
@@ -114,23 +134,6 @@ class Move(models.Model):  # I hate this model with a burning passion.
 
     def __str__(self):
         return self.name
-
-
-class MoveDomain(models.Model):
-    move = models.ForeignKey(
-        Move,
-        on_delete=models.CASCADE,
-        related_name="domains",
-    )
-    component_name = models.CharField(
-        max_length=100,
-    )
-
-    class Meta:
-        unique_together = ("move", "component_name")
-
-    def __str__(self):
-        return self.component_name
 
 
 class Card(models.Model):

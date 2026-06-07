@@ -11,28 +11,16 @@ class RarityAdmin(ModelAdmin):
     ordering = ["weight"]
 
 
-class MoveDomainInline(TabularInline):
-    model = MoveDomain
-    extra = 1
-
-
 @admin.register(Move)
 class MoveAdmin(ModelAdmin):
     form = MoveAdminForm
-    inlines = [MoveDomainInline]
-    list_display = ("id", "name", "cost", "damage")
+    list_display = ("id", "name", "cost", "damage", "domain")
     ordering = ["id"]
 
     fieldsets = (
         (
             "General Metadata",
-            {
-                "fields": (
-                    "name",
-                    "cost",
-                    "damage",
-                )
-            },
+            {"fields": ("name", "cost", "damage", "domain")},
         ),
         (
             "Self Effects",
@@ -74,6 +62,12 @@ class MoveAdmin(ModelAdmin):
             },
         ),
     )
+
+
+@admin.register(MoveDomain)
+class MoveDomainAdmin(ModelAdmin):
+    list_display = ("id", "component_name", "move_persistence_count")
+    search_fields = ("component_name",)
 
 
 class CardMoveInline(TabularInline):

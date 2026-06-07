@@ -17,7 +17,7 @@ class MoveDomainSerializer(ModelSerializer):
 
 
 class MoveSerializer(ModelSerializer):
-    domains = MoveDomainSerializer(many=True, read_only=True)
+    domain = MoveDomainSerializer(read_only=True)
 
     class Meta:
         model = Move
