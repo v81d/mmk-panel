@@ -42,7 +42,7 @@ class Rarity(models.Model):
 
 class MoveDomain(models.Model):
     component_name = models.CharField(max_length=100, unique=True)
-    move_persistence_count = models.PositiveIntegerField()
+    move_persistence_count = models.PositiveIntegerField(default=1)
 
     class Meta:
         verbose_name = "Move Domain"
