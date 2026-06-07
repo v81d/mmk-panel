@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin, TabularInline
 
 from .forms import MoveAdminForm
-from .models import Card, CardMove, Move, Rarity
+from .models import Card, CardMove, Move, MoveDomain, Rarity
 
 
 @admin.register(Rarity)
@@ -11,9 +11,15 @@ class RarityAdmin(ModelAdmin):
     ordering = ["weight"]
 
 
+class MoveDomainInline(TabularInline):
+    model = MoveDomain
+    extra = 1
+
+
 @admin.register(Move)
 class MoveAdmin(ModelAdmin):
     form = MoveAdminForm
+    inlines = [MoveDomainInline]
     list_display = ("id", "name", "cost", "damage")
     ordering = ["id"]
 
