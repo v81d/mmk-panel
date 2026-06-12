@@ -20,8 +20,9 @@ class MoveAdmin(ModelAdmin):
     fieldsets = (
         (
             "General Metadata",
-            {"fields": ("name", "cost", "damage", "domain")},
+            {"fields": ("name", "cost", "damage", "domain", "cooldown_duration")},
         ),
+        ("Domain", {"fields": ("domain", "domain_duration")}),
         (
             "Self Effects",
             {
@@ -66,7 +67,7 @@ class MoveAdmin(ModelAdmin):
 
 @admin.register(MoveDomain)
 class MoveDomainAdmin(ModelAdmin):
-    list_display = ("id", "component_name", "move_persistence_count")
+    list_display = ("id", "component_name")
     search_fields = ("component_name",)
 
 
