@@ -42,7 +42,6 @@ class Rarity(models.Model):
 
 class MoveDomain(models.Model):
     component_name = models.CharField(max_length=100, unique=True)
-    move_persistence_count = models.PositiveIntegerField(default=1)
 
     class Meta:
         verbose_name = "Move Domain"
@@ -52,10 +51,11 @@ class MoveDomain(models.Model):
         return self.component_name
 
 
-class Move(models.Model):  # I hate this model with a burning passion.
+class Move(models.Model):
     name = models.CharField(max_length=50)
     cost = models.PositiveIntegerField(null=True, blank=True)
     damage = models.PositiveIntegerField(null=True, blank=True)
+    cooldown_duration = models.PositiveIntegerField(default=1)
 
     domain = models.ForeignKey(
         MoveDomain,
@@ -64,6 +64,7 @@ class Move(models.Model):  # I hate this model with a burning passion.
         blank=True,
         related_name="moves",
     )
+    domain_duration = models.PositiveIntegerField(default=1)
 
     # Self properties
     self_defense_multiplier = ArrayField(
