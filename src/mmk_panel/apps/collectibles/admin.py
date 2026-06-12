@@ -20,7 +20,7 @@ class MoveAdmin(ModelAdmin):
     fieldsets = (
         (
             "General Metadata",
-            {"fields": ("name", "cost", "damage", "domain", "cooldown_duration")},
+            {"fields": ("name", "cost", "damage", "cooldown_duration")},
         ),
         ("Domain", {"fields": ("domain", "domain_duration")}),
         (
