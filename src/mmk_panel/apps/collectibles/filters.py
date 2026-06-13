@@ -14,6 +14,7 @@ class CharInFilter(BaseInFilter, CharFilter):
 
 class BaseIdFilterSet(FilterSet):  # applies to all
     id = NumberInFilter(field_name="id", lookup_expr="in")
+    exclude_id = NumberInFilter(field_name="id", lookup_expr="in", exclude=True)
 
     def filter_queryset(self, queryset):
         if self.data is not None and self.data.get("id") == "":
