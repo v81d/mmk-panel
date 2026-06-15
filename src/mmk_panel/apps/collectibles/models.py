@@ -34,7 +34,7 @@ class Rarity(models.Model):
     weight = models.PositiveIntegerField()
     name = models.CharField(max_length=50)
     plate_color = ColorField()
-    desperation_constant = models.PositiveIntegerField()
+    desperation_constant = models.IntegerField()
 
     def __str__(self):
         return self.name
@@ -54,7 +54,9 @@ class MoveDomain(models.Model):
 class Move(models.Model):
     name = models.CharField(max_length=50)
     cost = models.PositiveIntegerField(null=True, blank=True)
-    damage = models.PositiveIntegerField(null=True, blank=True)
+    damage = models.IntegerField(
+        null=True, blank=True
+    )  # not always positive because maybe the move heals the enemy?
     cooldown_duration = models.PositiveIntegerField(default=1)
 
     domain = models.ForeignKey(
@@ -146,10 +148,14 @@ class Card(models.Model):
     )  # required sprite field
     audio = models.FileField(upload_to=card_audio_upload_to, null=True, blank=True)
     rarity = models.ForeignKey(Rarity, on_delete=models.CASCADE)
-    health = models.PositiveIntegerField()
-    defense = models.PositiveIntegerField()
-    base_move_energy = models.PositiveIntegerField()
-    base_move_energy_gain = models.PositiveIntegerField()
+    health = models.PositiveIntegerField()  # should always be above 0
+    defense = (
+        models.IntegerField()
+    )  # could be negative to perhaps scale up enemy's damage (in case the health is unusually high)
+    base_move_energy = models.IntegerField()  # might be negative for some reason
+    base_move_energy_gain = (
+        models.IntegerField()
+    )  # will probably always be positive but who knows?
     desperation = models.FloatField()
 
     def save(self, *args, **kwargs):
