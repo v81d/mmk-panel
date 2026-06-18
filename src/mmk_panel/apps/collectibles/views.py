@@ -27,14 +27,33 @@ class CardViewSet(viewsets.ReadOnlyModelViewSet):
         except (ValueError, TypeError):
             return Response({"error": "Count must be a positive integer."}, status=400)
 
-        filtered_qs = CardFilterSet(
-            request.query_params, queryset=Card.objects.all()
-        ).qs
-        all_ids = filtered_qs.values_list("id", flat=True)
-        random_ids = random.sample(list(all_ids), min(count, len(all_ids)))
-        cards = filtered_qs.filter(id__in=random_ids)
+        weighted = request.query_params.get("weighted", "false").lower() == "true"
 
-        return Response(self.get_serializer(cards, many=True).data)
+        filtered_qs = CardFilterSet(
+            request.query_params, queryset=Card.objects.select_related("rarity")
+        ).qs
+
+        all_cards = list(filtered_qs)
+        if not all_cards:
+            return Response([])
+
+        count = min(count, len(all_cards))
+
+        if weighted:
+            weights = [1.0 / card.rarity.weight for card in all_cards]
+            remaining_cards = list(all_cards)
+            remaining_weights = list(weights)
+            chosen = []
+            for _ in range(count):
+                [pick] = random.choices(remaining_cards, weights=remaining_weights, k=1)
+                chosen.append(pick)
+                idx = remaining_cards.index(pick)
+                remaining_cards.pop(idx)
+                remaining_weights.pop(idx)
+        else:
+            chosen = random.sample(all_cards, count)
+
+        return Response(self.get_serializer(chosen, many=True).data)
 
 
 class MoveViewSet(viewsets.ReadOnlyModelViewSet):
